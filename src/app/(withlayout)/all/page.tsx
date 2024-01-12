@@ -4,6 +4,13 @@ import Card from "../../components/Card";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useDebounced } from "../../../redux/hooks";
+import styled from "styled-components";
+
+const ProductsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+`;
 
 import { useGetAllProductsQuery } from "@/src/redux/api/products/productApi";
 
@@ -28,7 +35,7 @@ const ProductList: React.FC = () => {
     sortOrder,
   };
 
-  // get department data
+  // get products data
   const { data: productsList, isLoading } = useGetAllProductsQuery({
     ...query,
     sortField: sortBy,
@@ -40,31 +47,24 @@ const ProductList: React.FC = () => {
 
   console.log("Products Data:", productsList);
 
-  const products = [
-    {
-      id: 1,
-      title: "Product 1",
-      price: 29.99,
-      imageSrc: "https://www.course-api.com/images/store/product-1.jpeg",
-    },
-    // Add more product data as needed
-  ];
-
-  if (!isLoading) {
-    console.log("Products Data:", productsList);
-  }
+  // if (!isLoading) {
+  //   console.log("Products Data:", productsList);
+  // }
 
   return (
-    <div>
-      {products.map((product) => (
+    <ProductsContainer>
+      {productsList?.data?.map((product: any) => (
         <Card
           key={product.id}
-          title={product.title}
+          title={product.name}
           price={product.price}
-          imageSrc={product.imageSrc}
+          imageSrc={product.image}
+          colors={product.colors}
+          company={product.company}
+          description={product.description}
         />
       ))}
-    </div>
+    </ProductsContainer>
   );
 };
 
