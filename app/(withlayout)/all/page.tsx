@@ -1,9 +1,32 @@
-import React from 'react'
+"use client";
 
-function AllItems() {
+import React from "react";
+import Card from "../../components/Card";
+import chair from "../../../public/chair.jpg";
+
+const ProductList = () => {
+  const products = [
+    {
+      id: 1,
+      title: "Product 1",
+      price: 29.99,
+      imageSrc: { chair },
+    },
+    // Add more product data as needed
+  ];
+
   return (
-    <div>AllItems</div>
-  )
-}
+    <div>
+      {products.map((product) => (
+        <Card
+          key={product.id}
+          title={product.title}
+          price={product.price}
+          imageSrc={product.imageSrc}
+        />
+      ))}
+    </div>
+  );
+};
 
-export default AllItems
+export default ProductList;

@@ -1,11 +1,10 @@
 "use client";
 
-import Header from "../components/Header";
 import SideBar from "../components/Sidebar";
-import { useRouter } from "next/navigation";
+
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
+
 
   return (
     <main
@@ -18,7 +17,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         margin: "0 auto",
       }}
     >
-      {/* <Header /> */}
       <SideBar />
       {children}
     </main>
