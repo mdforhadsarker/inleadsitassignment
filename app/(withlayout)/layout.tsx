@@ -1,13 +1,14 @@
 "use client";
 
 import SideBar from "../components/Sidebar";
-
+// import {
+//   ServerStyleSheet,
+//   StyleSheetManager,
+// } from 'styled-components';
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-
-
   return (
-    <main
+    <div
       style={{
         width: "1257px",
         // backgroundColor: "red",
@@ -19,7 +20,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     >
       <SideBar />
       {children}
-    </main>
+    </div>
   );
 };
 

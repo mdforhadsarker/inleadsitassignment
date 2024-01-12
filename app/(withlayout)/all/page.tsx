@@ -3,8 +3,9 @@
 import React from "react";
 import Card from "../../components/Card";
 import chair from "../../../public/chair.jpg";
+import Image from "next/image";
 
-const ProductList = () => {
+const ProductList: React.FC = () => {
   const products = [
     {
       id: 1,
