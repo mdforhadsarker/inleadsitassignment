@@ -3,7 +3,7 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import cart from "../../public/cart.png";
+import cart from "../../../public/cart.png";
 
 const HeaderContainer = styled.header`
   display: flex;
