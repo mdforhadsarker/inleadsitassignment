@@ -23,6 +23,7 @@ const Title = styled.h2`
   font-size: 16px;
   margin-bottom: 8px;
   margin: 0;
+  text-transform: capitalize;
 `;
 
 const Price = styled.p`

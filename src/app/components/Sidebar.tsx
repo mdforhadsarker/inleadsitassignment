@@ -20,6 +20,7 @@ const SearchBox = styled.input`
 const SidebarHeading = styled.h3`
   font-size: 18px;
   margin-bottom: 10px;
+  font-weight: bold;
 `;
 
 const SidebarSection = styled.div`
