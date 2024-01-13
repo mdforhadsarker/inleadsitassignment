@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 
@@ -13,15 +14,23 @@ const CardContainer = styled.div`
   flex-direction: row;
 `;
 
+const ImageContainer = styled.div`
+  box-sizing: border-box;
+  width: 300px;
+  height: 230px;
+  display: block;
+  margin: auto;
+`;
+
 const Image = styled.img`
-  width: 320px;
+  width: 300px;
   height: 230px;
   object-fit: cover;
 `;
 
 const ContentContainer = styled.div`
   padding: 20px;
-  width: 100%; 
+  width: 100%;
   box-sizing: border-box;
 `;
 
@@ -29,14 +38,12 @@ const Title = styled.h2`
   font-size: 18px;
   margin-bottom: 10px;
   font-weight: bold;
-  
 `;
 
 const Price = styled.p`
   font-size: 14px;
   margin-bottom: 10px;
   color: #ff8c00;
-  
 `;
 
 const Colors = styled.div`
@@ -72,10 +79,13 @@ const DetailsButton = styled.button`
   font-size: 12px;
 `;
 
-const Card = ({ imageSrc, title, price, description }) => {
+const Card = ({ imageSrc, title, price, description, productId }) => {
   return (
     <CardContainer>
-      <Image src={imageSrc} alt={title} />
+      <ImageContainer>
+        <Image src={imageSrc} alt={title} />
+      </ImageContainer>
+
       <ContentContainer>
         <div
           style={{
@@ -83,10 +93,12 @@ const Card = ({ imageSrc, title, price, description }) => {
           }}
         >
           <Title>{title}</Title>
-          <Price>${price}</Price>
+          <Price>$ {price}</Price>
           <div>
             <Description>{description}</Description>
-            <DetailsButton>Details</DetailsButton>
+            <DetailsButton>
+              <Link href={`/all/view/${productId}`}>Details</Link>
+            </DetailsButton>
           </div>
         </div>
       </ContentContainer>

@@ -8,6 +8,8 @@ import { useDebounced } from "../../../redux/hooks";
 import styled from "styled-components";
 import { FaTh, FaBars } from "react-icons/fa";
 import { useGetAllProductsQuery } from "@/src/redux/api/products/productApi";
+import Loading from "../../loading";
+import Link from "next/link";
 
 const ToggleViewButton = styled.button`
   background: none;
@@ -61,11 +63,16 @@ const ProductList: React.FC = () => {
   };
 
   const handleSortBy = (type: "lowest" | "highest") => {
-    const sortedData = [...dummyProductData];
-    sortedData.sort((a, b) =>
-      type === "lowest" ? a.price - b.price : b.price - a.price
-    );
-    setSortedProducts(sortedData);
+    if (type === "lowest" || type === "highest") {
+      const sortedData = [...productsList];
+      sortedData.sort((a, b) =>
+        type === "lowest" ? a.price - b.price : b.price - a.price
+      );
+      setSortedProducts(sortedData);
+    } else {
+      // If no sorting is applied, use the original productsList
+      setSortedProducts(productsList || []);
+    }
   };
 
   // states
@@ -81,13 +88,12 @@ const ProductList: React.FC = () => {
     delay: 600,
   });
 
-  // Use debounced term in your query
-  const query = {
+  // query
+  const query: Record<string, any> = {
     searchTerm: debouncedTerm,
     sortBy,
     sortOrder,
   };
-
   // get products data
   const { data: productsList, isLoading } = useGetAllProductsQuery({
     ...query,
@@ -98,50 +104,28 @@ const ProductList: React.FC = () => {
     size: size,
   });
 
-  // Dummy product data
-  const dummyProductData = [
-    {
-      id: 1,
-      name: "Accent Chair",
-      price: 25999,
-      image: "https://www.course-api.com/images/store/product-1.jpeg",
-      description:
-        "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz",
-    },
-    {
-      id: 2,
-      name: "Albany sectional",
-      price: 109999,
-      image: "https://www.course-api.com/images/store/product-2.jpeg",
-      description:
-        "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz",
-    },
-    {
-      id: 3,
-      name: "Albany sectional",
-      price: 1099,
-      image: "https://www.course-api.com/images/store/product-2.jpeg",
-      description:
-        "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz",
-    },
-    {
-      id: 4,
-      name: "Albany sectional",
-      price: 109,
-      image: "https://www.course-api.com/images/store/product-2.jpeg",
-      description:
-        "Cloud bread VHS hell of banjo bicycle rights jianbing umami mumblecore etsy 8-bit pok pok +1 wolf. Vexillologist yr dreamcatcher waistcoat, authentic chillwave trust fund. Viral typewriter fingerstache pinterest pork belly narwhal. Schlitz venmo everyday carry kitsch pitchfork chillwave iPhone taiyaki trust fund hashtag kinfolk microdosing gochujang live-edge",
-    },
-    // Add more dummy data as needed
-  ];
+  console.log("Products Data:", productsList);
 
-  const [sortedProducts, setSortedProducts] = useState(dummyProductData);
+  useEffect(() => {
+    setSortedProducts(productsList || []);
+  }, [productsList]);
 
-  // console.log("Products Data:", productsList);
+  const [sortedProducts, setSortedProducts] = useState(productsList || []);
 
-  // if (!isLoading) {
-  //   console.log("Products Data:", productsList);
-  // }
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -179,7 +163,7 @@ const ProductList: React.FC = () => {
               <FaBars />
             </ToggleViewButton>
             <TotalProducts>
-              {sortedProducts.length} Products Found
+              {sortedProducts ? sortedProducts.length : 0} Products Found
             </TotalProducts>
 
             <div
@@ -207,7 +191,7 @@ const ProductList: React.FC = () => {
           {viewMode === "grid" ? (
             <div style={{ paddingLeft: "20px" }}>
               <ProductsContainer>
-                {dummyProductData?.map((product: any) => (
+                {productsList?.map((product: any) => (
                   <Card
                     key={product.id}
                     title={product.name}
@@ -220,13 +204,14 @@ const ProductList: React.FC = () => {
           ) : (
             <div style={{ paddingLeft: "20px" }}>
               <ProductsContainerCol>
-                {dummyProductData?.map((product: any) => (
+                {productsList?.map((product: any) => (
                   <CardCol
                     key={product.id}
                     title={product.name}
                     price={product.price}
                     imageSrc={product.image}
                     description={product.description}
+                    productId={product.id}
                   />
                 ))}
               </ProductsContainerCol>

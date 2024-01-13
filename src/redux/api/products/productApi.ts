@@ -23,7 +23,7 @@ export const productApi = baseApi.injectEndpoints({
     // get single Products data
     getSingleProducts: build.query({
       query: (id: string | string[] | undefined) => ({
-        url: `/react-store-single-product/${id}`,
+        url: `/react-store-single-product?id=${id}`,
         method: "GET",
       }),
      

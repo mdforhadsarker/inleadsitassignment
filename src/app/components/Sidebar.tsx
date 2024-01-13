@@ -7,7 +7,7 @@ import Link from "next/link";
 const SidebarContainer = styled.div`
   width: 250px;
   padding: 20px;
-  background-color: #f4f4f4;
+  // background-color: #f4f4f4;
 `;
 
 const SearchBox = styled.input`
