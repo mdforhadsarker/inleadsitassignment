@@ -26,6 +26,13 @@ const SidebarHeading = styled.h3`
 const SidebarSection = styled.div`
   margin-bottom: 20px;
 `;
+const SelectBox = styled.select`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+`;
+
 
 const CheckboxLabel = styled.label`
   display: flex;
@@ -142,7 +149,15 @@ const Sidebar = () => {
 
       <SidebarSection>
         <SidebarHeading>Company Type</SidebarHeading>
-        {/* Add your company type selection logic here */}
+        <SelectBox
+          value={selectedCompanyType}
+          onChange={(e) => setSelectedCompanyType(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="CompanyType1">Company Type 1</option>
+          <option value="CompanyType2">Company Type 2</option>
+      
+        </SelectBox>
       </SidebarSection>
 
       <SidebarSection>
@@ -164,7 +179,6 @@ const Sidebar = () => {
         <SliderContainer>
           <Slider
             type="range"
-            min={0}
             max={4000}
             value={priceRange.max}
             onChange={(e) =>
@@ -173,7 +187,7 @@ const Sidebar = () => {
           />
         </SliderContainer>
         <div>
-          ${priceRange.min} - ${priceRange.max}
+         ${priceRange.max}
         </div>
       </SidebarSection>
 
