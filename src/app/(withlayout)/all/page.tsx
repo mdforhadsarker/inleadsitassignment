@@ -58,21 +58,10 @@ const SortBySelect = styled.select`
 const ProductList: React.FC = () => {
   const [viewMode, setViewMode] = useState<"grid" | "col">("grid");
 
+  const [loading, setLoading] = useState(true); // Add loading state
+
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "grid" ? "col" : "grid"));
-  };
-
-  const handleSortBy = (type: "lowest" | "highest") => {
-    if (type === "lowest" || type === "highest") {
-      const sortedData = [...productsList];
-      sortedData.sort((a, b) =>
-        type === "lowest" ? a.price - b.price : b.price - a.price
-      );
-      setSortedProducts(sortedData);
-    } else {
-      // If no sorting is applied, use the original productsList
-      setSortedProducts(productsList || []);
-    }
   };
 
   // states
@@ -81,6 +70,16 @@ const ProductList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+
+  const handleSortBy = (type: "lowest" | "highest") => {
+    if (type === "lowest" || type === "highest") {
+      setSortBy("price"); // Set the field to sort by
+      setSortOrder(type === "lowest" ? "asc" : "desc"); // Set the sort order
+    } else {
+      setSortBy(""); // Reset sortBy when no sorting is applied
+      setSortOrder("");
+    }
+  };
 
   // Create debounce hook
   const debouncedTerm = useDebounced({
@@ -107,24 +106,16 @@ const ProductList: React.FC = () => {
   console.log("Products Data:", productsList);
 
   useEffect(() => {
-    setSortedProducts(productsList || []);
+    if (productsList) {
+      setSortedProducts(productsList);
+      setLoading(false);
+    }
   }, [productsList]);
 
   const [sortedProducts, setSortedProducts] = useState(productsList || []);
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <Loading />
-      </div>
-    );
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -191,12 +182,13 @@ const ProductList: React.FC = () => {
           {viewMode === "grid" ? (
             <div style={{ paddingLeft: "20px" }}>
               <ProductsContainer>
-                {productsList?.map((product: any) => (
+                {sortedProducts?.map((product: any) => (
                   <Card
                     key={product.id}
                     title={product.name}
                     price={product.price}
                     imageSrc={product.image}
+                    productId={product.id}
                   />
                 ))}
               </ProductsContainer>
@@ -204,7 +196,7 @@ const ProductList: React.FC = () => {
           ) : (
             <div style={{ paddingLeft: "20px" }}>
               <ProductsContainerCol>
-                {productsList?.map((product: any) => (
+                {sortedProducts?.map((product: any) => (
                   <CardCol
                     key={product.id}
                     title={product.name}

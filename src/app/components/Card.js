@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Link from "next/link";
 
 const CardContainer = styled.div`
   width: 300px;
@@ -33,23 +34,25 @@ const Price = styled.p`
   margin: 0;
 `;
 
-const Card = ({ imageSrc, title, price }) => {
+const Card = ({ imageSrc, title, price, productId }) => {
   return (
-    <CardContainer>
-      <Image src={imageSrc} alt={title} />
-      <ContentContainer>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "10px",
-          }}
-        >
-          <Title>{title}</Title>
-          <Price>$ {price}</Price>
-        </div>
-      </ContentContainer>
-    </CardContainer>
+    <Link href={`/all/view/${productId}`}>
+      <CardContainer>
+        <Image src={imageSrc} alt={title} />
+        <ContentContainer>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+            }}
+          >
+            <Title>{title}</Title>
+            <Price>$ {price}</Price>
+          </div>
+        </ContentContainer>
+      </CardContainer>
+    </Link>
   );
 };
 
