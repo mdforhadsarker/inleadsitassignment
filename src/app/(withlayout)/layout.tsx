@@ -1,12 +1,11 @@
+"use client";
 
-
+import { useState } from "react";
 import SideBar from "../components/Sidebar";
-
-
+import ProductList from "./all/page";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-
-
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <div
       style={{
@@ -16,7 +15,8 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
         margin: "0 auto",
       }}
     >
-      <SideBar />
+      <SideBar onSearchTermChange={setSearchTerm} />
+      <ProductList searchTerm={searchTerm} />
       {children}
     </div>
   );

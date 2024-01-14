@@ -33,7 +33,6 @@ const SelectBox = styled.select`
   border-radius: 5px;
 `;
 
-
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
@@ -82,7 +81,11 @@ const ColorButton = styled.button`
   }
 `;
 
-const Sidebar = () => {
+const Sidebar = ({
+  onSearchTermChange,
+}: {
+  onSearchTermChange: (term: string) => void;
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompanyType, setSelectedCompanyType] = useState("All");
   const [selectedColors, setSelectedColors] = useState(["All"]);
@@ -119,7 +122,10 @@ const Sidebar = () => {
         type="text"
         placeholder="Search..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          onSearchTermChange(e.target.value); // Pass search term to parent
+        }}
       />
 
       <SidebarSection>
@@ -156,7 +162,6 @@ const Sidebar = () => {
           <option value="All">All</option>
           <option value="CompanyType1">Company Type 1</option>
           <option value="CompanyType2">Company Type 2</option>
-      
         </SelectBox>
       </SidebarSection>
 
@@ -186,9 +191,7 @@ const Sidebar = () => {
             }
           />
         </SliderContainer>
-        <div>
-         ${priceRange.max}
-        </div>
+        <div>${priceRange.max}</div>
       </SidebarSection>
 
       <SidebarSection>

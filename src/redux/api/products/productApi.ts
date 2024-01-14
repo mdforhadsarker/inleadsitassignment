@@ -9,13 +9,7 @@ export const productApi = baseApi.injectEndpoints({
         return {
           url: "/react-store-products",
           method: "GET",
-          params: {
-            pageNo: arg.page !== undefined ? arg.page : 1,
-            pageSize: arg.size !== undefined ? arg.size : 10,
-            filter: arg.filter,
-            dbFieldName: arg.dbFieldName,
-            sortDirection: arg.sortDirection
-          }
+          params: arg
         };
       },
     }),
@@ -29,6 +23,14 @@ export const productApi = baseApi.injectEndpoints({
      
     }),
 
+    // search products by name
+    // getProductsByName: build.query({
+    //   query: (name: string) => ({
+    //     url: `/search-products?name=${name}`,  // Replace '/search-products' with your actual endpoint for searching by name
+    //     method: "GET",
+    //   }),
+    // }),
+
 
   }),
 });
@@ -36,4 +38,5 @@ export const productApi = baseApi.injectEndpoints({
 export const {
   useGetAllProductsQuery, 
   useGetSingleProductsQuery,
+  // useGetProductsByNameQuery
 } = productApi;
