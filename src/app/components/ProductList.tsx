@@ -1,14 +1,14 @@
 "use client";
 
-import Card from "../../components/Card";
-import CardCol from "../../components/CardCol";
+import Card from "../components/Card";
+import CardCol from "../components/CardCol";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { useDebounced } from "../../../redux/hooks";
+import { useDebounced } from "../../redux/hooks";
 import styled from "styled-components";
 import { FaTh, FaBars } from "react-icons/fa";
 import { useGetAllProductsQuery } from "@/src/redux/api/products/productApi";
-import Loading from "../../loading";
+import Loading from "../loading";
 import Link from "next/link";
 
 const ToggleViewButton = styled.button`
@@ -127,9 +127,6 @@ const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
     }
   }, [productsList]);
 
-  if (loading) {
-    return <Loading />;
-  }
 
   return (
     <>
@@ -192,37 +189,40 @@ const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
           </SortContainer>
         </div>
         <div>
-          {viewMode === "grid" ? (
-            <div style={{ paddingLeft: "20px" }}>
-              <ProductsContainer>
-                {sortedProducts?.map((product: any) => (
-                  <Card
-                    key={product.id}
-                    title={product.name}
-                    price={product.price}
-                    imageSrc={product.image}
-                    productId={product.id}
-                  />
-                ))}
-              </ProductsContainer>
-            </div>
-          ) : (
-            <div style={{ paddingLeft: "20px" }}>
-              <ProductsContainerCol>
-                {sortedProducts?.map((product: any) => (
-                  <CardCol
-                    key={product.id}
-                    title={product.name}
-                    price={product.price}
-                    imageSrc={product.image}
-                    description={product.description}
-                    productId={product.id}
-                  />
-                ))}
-              </ProductsContainerCol>
-            </div>
-          )}
-        </div>
+  {loading ? (
+    <Loading />
+  ) : (
+    <div style={{ paddingLeft: "20px" }}>
+      {viewMode === "grid" ? (
+        <ProductsContainer>
+          {sortedProducts?.map((product: any) => (
+            <Card
+              key={product.id}
+              title={product.name}
+              price={product.price}
+              imageSrc={product.image}
+              productId={product.id}
+            />
+          ))}
+        </ProductsContainer>
+      ) : (
+        <ProductsContainerCol>
+          {sortedProducts?.map((product: any) => (
+            <CardCol
+              key={product.id}
+              title={product.name}
+              price={product.price}
+              imageSrc={product.image}
+              description={product.description}
+              productId={product.id}
+            />
+          ))}
+        </ProductsContainerCol>
+      )}
+    </div>
+  )}
+</div>
+
       </div>
     </>
   );

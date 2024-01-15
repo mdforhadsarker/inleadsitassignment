@@ -79,7 +79,7 @@ const ViewSingleProduct = ({ params }: any) => {
           </ProductDescription>
         </ProductInfo>
       </ProductContainer>
-      <BackButton href={"/all"}>Back to Products</BackButton>
+      <BackButton href={"/products"}>Back to Products</BackButton>
     </Wrapper>
   );
 };
