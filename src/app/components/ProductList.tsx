@@ -56,7 +56,16 @@ const SortBySelect = styled.select`
 const ProductList: React.FC<{
   searchTerm: string;
   selectedCategory: string;
-}> = ({ searchTerm, selectedCategory }) => {
+  selectedCompanyType: string;
+  selectedColors: string;
+  freeShipping: boolean;
+}> = ({
+  searchTerm,
+  selectedCategory,
+  selectedCompanyType,
+  selectedColors,
+  freeShipping
+}) => {
   const [viewMode, setViewMode] = useState<"grid" | "col">("grid");
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("");
@@ -118,7 +127,14 @@ const ProductList: React.FC<{
         (product: any) =>
           product.name.toLowerCase().includes(debouncedTerm?.toLowerCase()) &&
           (selectedCategory === "All" ||
-            product.category.toLowerCase() === selectedCategory.toLowerCase())
+            product.category.toLowerCase() ===
+              selectedCategory.toLowerCase()) &&
+          (selectedCompanyType === "All" ||
+            product.company.toLowerCase() ===
+              selectedCompanyType.toLowerCase()) &&
+          (selectedColors.includes("All") ||
+            selectedColors.includes(product.colors)) &&
+          (!freeShipping || product.shipping)
       ) || [];
 
     // Apply client-side sorting
@@ -136,7 +152,15 @@ const ProductList: React.FC<{
     setSortedProducts(sortedProducts);
 
     setLoading(false); // Set loading state to false after updating the products
-  }, [debouncedTerm, productsList, selectedSortType]);
+  }, [
+    debouncedTerm,
+    productsList,
+    selectedSortType,
+    selectedCategory,
+    selectedCompanyType,
+    selectedColors,
+    freeShipping
+  ]);
 
   return (
     <>

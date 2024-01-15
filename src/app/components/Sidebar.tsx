@@ -42,8 +42,9 @@ const CheckboxLabel = styled.label`
   flex-direction: row;
   justify-content: space-between;
 
-  input {
-    margin-left: 5px;
+  input[type="checkbox"]:checked {
+    border-color: #3498db;
+    // Add any other styles you need
   }
 `;
 
@@ -74,9 +75,12 @@ const ColorButton = styled.button`
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 2px solid #ddd;
+
+  border: 2px solid ${(props) => (props.selected ? "#3498db" : "#ddd")}; // Conditional border color
+
   cursor: pointer;
-  background-color: ${(props) => (props.selected ? props.color : "#ffffff")};
+  background-color: ${(props) =>
+    props.color === "All" ? "#ffffff" : props.color};
 
   &:hover {
     border-color: #333;
@@ -95,55 +99,87 @@ const SidebarButton = styled.button`
 
 const Sidebar = ({
   onSearchTermChange,
-  setSelectedCategory, // Add this line to include the prop
+  setSelectedCategory,
+  setSelectedCompanyType,
+  setSelectedColors,
+  setFreeShipping,
 }: {
   onSearchTermChange: (term: string) => void;
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>; // Include the type
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedCompanyType: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedColors: React.Dispatch<React.SetStateAction<string>>;
+  setFreeShipping: (freeShipping: boolean) => void;
 }) => {
   const [selectedCategory, setSelectedCategoryLocal] = useState("All");
-  const [selectedCompanyType, setSelectedCompanyType] = useState("All");
-  const [selectedColors, setSelectedColors] = useState(["All"]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 4000 });
-  const [freeShipping, setFreeShipping] = useState(false);
+  const [selectedCompanyType, setSelectedCompanyTypeLocal] = useState("All");
+  const [selectedColors, setSelectedColorsLocal] = useState(["All"]);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
+  const [freeShipping, setFreeShippingLocal] = useState(false);
+  const [checked, setChecked] = useState<boolean>(false);
   const dispatch = useDispatch();
   const searchTerm = useSelector(selectSearchTerm);
 
+  const handleCompanyTypeChange = (company: string) => {
+    setSelectedCompanyTypeLocal(company);
+    setSelectedCompanyType(company);
+    dispatch(setSearchTerm(""));
+    onSearchTermChange("");
+  };
+
+  const handleCheckBoxChange = (isChecked: boolean) => {
+    console.log("Checkbox clicked. Current state:", isChecked);
+    setFreeShipping(isChecked);
+    setChecked(isChecked);
+    dispatch(setSearchTerm(""));
+    onSearchTermChange("");
+  };
+
   const handleClearFilters = () => {
-    dispatch(setSearchTerm("")); // Clear the search term
+    dispatch(setSearchTerm(""));
     setSearchTerm("");
     setSelectedCategory("All");
     setSelectedCompanyType("All");
-    setSelectedColors(["All"]);
+    setSelectedColorsLocal(["All"]);
+    setSelectedColors("All");
+    setSelectedColor("All");
     setPriceRange({ min: 0, max: 4000 });
     setFreeShipping(false);
-    onSearchTermChange(""); // Pass an empty string to parent
+    onSearchTermChange("");
+    setFreeShippingLocal(false);
+    setChecked(false);
   };
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategoryLocal(category);
     setSelectedCategory(category);
-    dispatch(setSearchTerm("")); // Clear search term when a category is selected
-    onSearchTermChange(""); // Pass an empty string to parent
+    dispatch(setSearchTerm(""));
+    onSearchTermChange("");
   };
 
   useEffect(() => {
     console.log("Selected Category Updated:", selectedCategory);
   }, [selectedCategory]);
 
-  const handleColorClick = (color: any) => {
-    if (color === "All") {
-      setSelectedColors(["All"]);
-    } else {
-      setSelectedColors((prevColors) => {
+  const [selectedColor, setSelectedColor] = useState("All");
+
+  const handleColorClick = (colors: any) => {
+    setSelectedColorsLocal((prevColors) => {
+      if (colors == "All") {
+        return ["All"];
+      } else {
         if (prevColors.includes("All")) {
-          return [color];
+          return [colors];
         } else {
-          return prevColors.includes(color)
-            ? prevColors.filter((c) => c !== color)
-            : [...prevColors, color];
+          return prevColors.includes(colors)
+            ? prevColors.filter((c) => c !== colors)
+            : [...prevColors, colors];
         }
-      });
-    }
+      }
+    });
+    dispatch(setSearchTerm(""));
+    onSearchTermChange("");
+    setSelectedColors(colors);
+    setSelectedColor(colors);
   };
 
   return (
@@ -231,25 +267,32 @@ const Sidebar = ({
         <SidebarHeading>Company Type</SidebarHeading>
         <SelectBox
           value={selectedCompanyType}
-          onChange={(e) => setSelectedCompanyType(e.target.value)}
+          onChange={(e) => {
+            setSelectedCompanyType(e.target.value);
+            handleCompanyTypeChange(e.target.value);
+          }}
         >
           <option value="All">All</option>
-          <option value="CompanyType1">Company Type 1</option>
-          <option value="CompanyType2">Company Type 2</option>
+          <option value="marcos">Marcos</option>
+          <option value="liddy">Liddy</option>
+          <option value="ikea">Ikea</option>
+          <option value="caressa">Caressa</option>
         </SelectBox>
       </SidebarSection>
 
       <SidebarSection>
         <SidebarHeading>Color Options</SidebarHeading>
         <ColorContainer>
-          {["All", "red", "green", "blue", "grey", "yellow"].map((color) => (
-            <ColorButton
-              key={color}
-              color={color}
-              selected={selectedColors.includes(color)}
-              onClick={() => handleColorClick(color)}
-            />
-          ))}
+          {["All", "#ff0000", "#00ff00", "#0000ff", "#ffb900", "#000"].map(
+            (color) => (
+              <ColorButton
+                key={color}
+                color={color}
+                selected={selectedColor === color}
+                onClick={() => handleColorClick(color)}
+              />
+            )
+          )}
         </ColorContainer>
       </SidebarSection>
 
@@ -258,7 +301,7 @@ const Sidebar = ({
         <SliderContainer>
           <Slider
             type="range"
-            max={4000}
+            max={50000}
             value={priceRange.max}
             onChange={(e) =>
               setPriceRange({ ...priceRange, max: Number(e.target.value) })
@@ -273,8 +316,9 @@ const Sidebar = ({
           Free Shipping
           <input
             type="checkbox"
-            checked={freeShipping}
-            onChange={() => setFreeShipping(!freeShipping)}
+            // checked={freeShipping}
+            checked={checked}
+            onChange={(e) => handleCheckBoxChange(e.target.checked)}
           />
         </CheckboxLabel>
       </SidebarSection>
