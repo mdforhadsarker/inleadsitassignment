@@ -58,6 +58,7 @@ const BackButton = styled(Link)`
 `;
 
 const ViewSingleProduct = ({ params }: any) => {
+  
   const id = params.slug as string;
   const { data, isLoading } = useGetSingleProductsQuery(id);
   const singleProductData = data;

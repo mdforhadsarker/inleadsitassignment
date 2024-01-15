@@ -150,7 +150,7 @@ const Sidebar = ({
     setFreeShippingLocal(false);
     setChecked(false);
     setPriceRangeLocal({ min: 0, max: 400000 });
-    setPriceRange(0)
+    setPriceRange({ min: 0, max: 400000 });
   };
 
   const handleCategoryClick = (category: string) => {
