@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchTerm, selectSearchTerm } from '../../redux/slice/searchSlice';
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -86,18 +88,22 @@ const Sidebar = ({
 }: {
   onSearchTermChange: (term: string) => void;
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const [selectedCompanyType, setSelectedCompanyType] = useState("All");
   const [selectedColors, setSelectedColors] = useState(["All"]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 4000 });
   const [freeShipping, setFreeShipping] = useState(false);
+  const dispatch = useDispatch();
+  const searchTerm = useSelector(selectSearchTerm);
 
   const handleClearFilters = () => {
+    dispatch(setSearchTerm('')); // Clear the search term
     setSearchTerm("");
     setSelectedCompanyType("All");
     setSelectedColors(["All"]);
     setPriceRange({ min: 0, max: 4000 });
     setFreeShipping(false);
+    onSearchTermChange(''); // Pass an empty string to parent
   };
 
   const handleColorClick = (color: any) => {
@@ -123,7 +129,7 @@ const Sidebar = ({
         placeholder="Search..."
         value={searchTerm}
         onChange={(e) => {
-          setSearchTerm(e.target.value);
+          dispatch(setSearchTerm(e.target.value));
           onSearchTermChange(e.target.value); // Pass search term to parent
         }}
       />

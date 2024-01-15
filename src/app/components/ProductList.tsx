@@ -17,10 +17,8 @@ const ToggleViewButton = styled.button`
   font-size: 24px;
   cursor: pointer;
   margin-right: 10px;
-  color: ${(props) => (props.isSelected ? "#000" : "#ccc")};
-  // border: 1px solid #000;
-  border: ${(props) =>
-    props.isSelected ? "1px solid #000" : " 1px solid #ccc"};
+  color: ${(props) => (props.isSelected ? "#000" : "#fff")};
+  border: 1px solid #000;
   padding: 6px;
   border-radius: 5px;
 `;
@@ -45,7 +43,7 @@ const ProductsContainer = styled.div`
 
 const ProductsContainerCol = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr); 
+  grid-template-columns: repeat(1, 1fr);
   gap: 16px;
 `;
 
@@ -57,172 +55,181 @@ const SortBySelect = styled.select`
 
 const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
   const [viewMode, setViewMode] = useState<"grid" | "col">("grid");
-
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [selectedSortType, setSelectedSortType] = useState<string>("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "grid" ? "col" : "grid"));
   };
 
-  // states
-  // const [size, setSize] = useState<number>(10);
-  // const [page, setPage] = useState<number>(0);
-  // const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("");
-  const [sortOrder, setSortOrder] = useState("");
-
   const handleSortBy = (type: "lowest" | "highest") => {
     if (type === "lowest" || type === "highest") {
-      setSortBy("price"); // Set the field to sort by
-      setSortOrder(type === "lowest" ? "asc" : "desc"); // Set the sort order
+      setSortBy("price");
+      setSortOrder(type === "lowest" ? "asc" : "desc");
+      setSelectedSortType(type);
     } else {
-      setSortBy(""); // Reset sortBy when no sorting is applied
+      setSortBy("");
       setSortOrder("");
+      setSelectedSortType("");
     }
   };
 
   // Create debounce hook
   const debouncedTerm = useDebounced({
     searchQuery: searchTerm,
-    delay: 600,
+    delay: 2000,
   });
 
-  // query
-  const query: Record<string, any> = {
-    searchTerm: debouncedTerm,
-
-  };
   // get products data
   const { data: productsList, isLoading } = useGetAllProductsQuery({
-    ...query,
-    filter: debouncedTerm,
-  
+    searchTerm: searchTerm,
+    filter: searchTerm,
+    sortBy:
+      selectedSortType === "lowest"
+        ? "price"
+        : selectedSortType === "highest"
+        ? "price"
+        : undefined,
+    sortOrder:
+      selectedSortType === "lowest"
+        ? "asc"
+        : selectedSortType === "highest"
+        ? "desc"
+        : undefined,
   });
 
-  console.log("Products Data:", productsList);
-
-
+  // console.log("Products Data:", productsList);
 
   const [sortedProducts, setSortedProducts] = useState(productsList || []);
 
-  // useEffect block to handle search term change
+  // useEffect
   useEffect(() => {
-    setLoading(true); // Set loading state to true when the search term changes
-    // setPage(0); // Reset the page to 0 when the search term changes
+    setLoading(true);
 
     // Fetch all products and filter based on the search term client-side
-    const filteredProducts = productsList?.filter((product: any) =>
-      product.name.toLowerCase().includes(debouncedTerm?.toLowerCase())
-    );
+    const filteredProducts =
+      productsList?.filter((product: any) =>
+        product.name.toLowerCase().includes(debouncedTerm?.toLowerCase())
+      ) || [];
 
-    // Update sortedProducts with filtered products
-    setSortedProducts(filteredProducts || []);
-    setLoading(false); // Set loading state to false after updating the products
-  }, [debouncedTerm, productsList]);
-
-  useEffect(() => {
-    if (productsList) {
-      setSortedProducts(productsList);
-      setLoading(false);
+    // Apply client-side sorting
+    let sortedProducts = [...filteredProducts];
+    if (selectedSortType === "lowest") {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (selectedSortType === "highest") {
+      sortedProducts.sort((a, b) => b.price - a.price);
     }
-  }, [productsList]);
+
+    // Update filteredProducts state when the search term changes
+    setFilteredProducts(filteredProducts);
+
+    // Use a temporary variable for sorting
+    setSortedProducts(sortedProducts);
+
+    setLoading(false); // Set loading state to false after updating the products
+  }, [debouncedTerm, productsList, selectedSortType]);
 
 
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            paddingLeft: "20px",
-            marginBottom: "10px",
-            display: "flex",
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "10",
-              width: "100%",
-            }}
-          >
-            <ToggleViewButton
-              isSelected={viewMode === "grid"}
-              onClick={toggleViewMode}
-            >
-              <FaTh />
-            </ToggleViewButton>
-            <ToggleViewButton
-              isSelected={viewMode === "col"}
-              onClick={toggleViewMode}
-            >
-              <FaBars />
-            </ToggleViewButton>
-            <TotalProducts>
-              {sortedProducts ? sortedProducts.length : 0} Products Found
-            </TotalProducts>
-
-            <div
-              style={{
-                backgroundColor: "white",
-                height: "2px",
-                width: "100%",
-                borderRadius: "2px",
-              }}
-            ></div>
-          </div>
-          <SortContainer>
-            Sort by
-            <SortBySelect
-              onChange={(e) =>
-                handleSortBy(e.target.value as "lowest" | "highest")
-              }
-            >
-              <option value="lowest">Lowest</option>
-              <option value="highest">Highest</option>
-            </SortBySelect>
-          </SortContainer>
-        </div>
         <div>
-  {loading ? (
-    <Loading />
-  ) : (
-    <div style={{ paddingLeft: "20px" }}>
-      {viewMode === "grid" ? (
-        <ProductsContainer>
-          {sortedProducts?.map((product: any) => (
-            <Card
-              key={product.id}
-              title={product.name}
-              price={product.price}
-              imageSrc={product.image}
-              productId={product.id}
-            />
-          ))}
-        </ProductsContainer>
-      ) : (
-        <ProductsContainerCol>
-          {sortedProducts?.map((product: any) => (
-            <CardCol
-              key={product.id}
-              title={product.name}
-              price={product.price}
-              imageSrc={product.image}
-              description={product.description}
-              productId={product.id}
-            />
-          ))}
-        </ProductsContainerCol>
-      )}
-    </div>
-  )}
-</div>
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <div
+                style={{
+                  paddingLeft: "20px",
+                  marginBottom: "10px",
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: "10",
+                    width: "100%",
+                  }}
+                >
+                  <ToggleViewButton
+                    isSelected={viewMode === "grid"}
+                    onClick={toggleViewMode}
+                  >
+                    <FaTh />
+                  </ToggleViewButton>
+                  <ToggleViewButton
+                    isSelected={viewMode === "col"}
+                    onClick={toggleViewMode}
+                  >
+                    <FaBars />
+                  </ToggleViewButton>
+                  <TotalProducts>
+                    {sortedProducts ? sortedProducts.length : 0} Products Found
+                  </TotalProducts>
 
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      height: "2px",
+                      width: "100%",
+                      borderRadius: "2px",
+                    }}
+                  ></div>
+                </div>
+                <SortContainer>
+                  Sort by
+                  <SortBySelect
+                    onChange={(e) =>
+                      handleSortBy(e.target.value as "lowest" | "highest" | "")
+                    }
+                  >
+                    <option value="">None</option>
+                    <option value="lowest">Lowest</option>
+                    <option value="highest">Highest</option>
+                  </SortBySelect>
+                </SortContainer>
+              </div>
+              <div style={{ paddingLeft: "20px" }}>
+                {viewMode === "grid" ? (
+                  <ProductsContainer>
+                    {sortedProducts?.map((product: any) => (
+                      <Card
+                        key={product.id}
+                        title={product.name}
+                        price={product.price}
+                        imageSrc={product.image}
+                        productId={product.id}
+                      />
+                    ))}
+                  </ProductsContainer>
+                ) : (
+                  <ProductsContainerCol>
+                    {sortedProducts?.map((product: any) => (
+                      <CardCol
+                        key={product.id}
+                        title={product.name}
+                        price={product.price}
+                        imageSrc={product.image}
+                        description={product.description}
+                        productId={product.id}
+                      />
+                    ))}
+                  </ProductsContainerCol>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </>
   );

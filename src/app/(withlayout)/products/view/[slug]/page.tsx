@@ -62,29 +62,31 @@ const ViewSingleProduct = ({ params }: any) => {
   const { data, isLoading } = useGetSingleProductsQuery(id);
   const singleProductData = data;
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   return (
-    <Wrapper>
-      <BackButton href={"/products"}>Back to Products</BackButton>
-      <ProductContainer>
-        <ProductImage
-          src={singleProductData.images[0].url}
-          alt={singleProductData.name}
-        />
-        <ProductInfo>
-          <ProductTitle>{singleProductData.name}</ProductTitle>
-          <p>Price: ${singleProductData.price}</p>
-          <p>Stock: {singleProductData.stock}</p>
-          <p>Category: {singleProductData.category}</p>
-          <ProductDescription>
-            {singleProductData.description}
-          </ProductDescription>
-        </ProductInfo>
-      </ProductContainer>
-    </Wrapper>
+    <>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <Wrapper>
+          <BackButton href={"/products"}>Back to Products</BackButton>
+          <ProductContainer>
+            <ProductImage
+              src={singleProductData.images[0].url}
+              alt={singleProductData.name}
+            />
+            <ProductInfo>
+              <ProductTitle>{singleProductData.name}</ProductTitle>
+              <p>Price: ${singleProductData.price}</p>
+              <p>Stock: {singleProductData.stock}</p>
+              <p>Category: {singleProductData.category}</p>
+              <ProductDescription>
+                {singleProductData.description}
+              </ProductDescription>
+            </ProductInfo>
+          </ProductContainer>
+        </Wrapper>
+      )}
+    </>
   );
 };
 
