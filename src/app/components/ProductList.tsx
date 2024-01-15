@@ -59,12 +59,14 @@ const ProductList: React.FC<{
   selectedCompanyType: string;
   selectedColors: string;
   freeShipping: boolean;
+  priceRange: number;
 }> = ({
   searchTerm,
   selectedCategory,
   selectedCompanyType,
   selectedColors,
-  freeShipping
+  freeShipping,
+  priceRange,
 }) => {
   const [viewMode, setViewMode] = useState<"grid" | "col">("grid");
   const [loading, setLoading] = useState(true);
@@ -134,7 +136,8 @@ const ProductList: React.FC<{
               selectedCompanyType.toLowerCase()) &&
           (selectedColors.includes("All") ||
             selectedColors.includes(product.colors)) &&
-          (!freeShipping || product.shipping)
+          (freeShipping ? product.shipping : true) &&
+        product.price >= priceRange.min && product.price <= priceRange.max
       ) || [];
 
     // Apply client-side sorting
@@ -159,7 +162,8 @@ const ProductList: React.FC<{
     selectedCategory,
     selectedCompanyType,
     selectedColors,
-    freeShipping
+    freeShipping,
+    priceRange
   ]);
 
   return (

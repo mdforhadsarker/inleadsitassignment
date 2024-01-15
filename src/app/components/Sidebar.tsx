@@ -103,17 +103,20 @@ const Sidebar = ({
   setSelectedCompanyType,
   setSelectedColors,
   setFreeShipping,
+  setPriceRange,
 }: {
   onSearchTermChange: (term: string) => void;
   setSelectedCategory: React.Dispatch<React.SetStateAction<string>>;
   setSelectedCompanyType: React.Dispatch<React.SetStateAction<string>>;
   setSelectedColors: React.Dispatch<React.SetStateAction<string>>;
   setFreeShipping: (freeShipping: boolean) => void;
+  setPriceRange: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const [selectedCategory, setSelectedCategoryLocal] = useState("All");
   const [selectedCompanyType, setSelectedCompanyTypeLocal] = useState("All");
   const [selectedColors, setSelectedColorsLocal] = useState(["All"]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 50000 });
+  const [priceRange, setPriceRangeLocal] = useState({ min: 0, max: 400000 });
+
   const [freeShipping, setFreeShippingLocal] = useState(false);
   const [checked, setChecked] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -142,11 +145,12 @@ const Sidebar = ({
     setSelectedColorsLocal(["All"]);
     setSelectedColors("All");
     setSelectedColor("All");
-    setPriceRange({ min: 0, max: 4000 });
     setFreeShipping(false);
     onSearchTermChange("");
     setFreeShippingLocal(false);
     setChecked(false);
+    setPriceRangeLocal({ min: 0, max: 400000 });
+    setPriceRange(0)
   };
 
   const handleCategoryClick = (category: string) => {
@@ -190,7 +194,7 @@ const Sidebar = ({
         value={searchTerm}
         onChange={(e) => {
           dispatch(setSearchTerm(e.target.value));
-          onSearchTermChange(e.target.value); // Pass search term to parent
+          onSearchTermChange(e.target.value);
         }}
       />
 
@@ -301,11 +305,15 @@ const Sidebar = ({
         <SliderContainer>
           <Slider
             type="range"
-            max={50000}
+            max={400000}
             value={priceRange.max}
-            onChange={(e) =>
-              setPriceRange({ ...priceRange, max: Number(e.target.value) })
-            }
+            onChange={(e) => {
+              setPriceRangeLocal({
+                ...priceRange,
+                max: Number(e.target.value),
+              });
+              setPriceRange({ ...priceRange, max: Number(e.target.value) });
+            }}
           />
         </SliderContainer>
         <div>${priceRange.max}</div>

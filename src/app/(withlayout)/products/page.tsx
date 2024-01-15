@@ -8,8 +8,9 @@ const ProductLists = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedCompanyType, setSelectedCompanyType] = useState("All");
-  const [selectedColors, setSelectedColors] = useState("All"); 
-  const [freeShipping, setFreeShipping] = useState(false); 
+  const [selectedColors, setSelectedColors] = useState("All");
+  const [freeShipping, setFreeShipping] = useState(false);
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 400000 }); // Use an object for priceRange
 
   return (
     <>
@@ -18,14 +19,16 @@ const ProductLists = () => {
         setSelectedCategory={setSelectedCategory}
         setSelectedCompanyType={setSelectedCompanyType}
         setSelectedColors={setSelectedColors}
-        setFreeShipping={setFreeShipping} 
+        setFreeShipping={setFreeShipping}
+        setPriceRange={setPriceRange}
       />
       <ProductList
         searchTerm={searchTerm}
         selectedCategory={selectedCategory}
         selectedCompanyType={selectedCompanyType}
         selectedColors={selectedColors}
-        freeShipping={freeShipping} 
+        freeShipping={freeShipping}
+        priceRange={priceRange}
       />
     </>
   );
