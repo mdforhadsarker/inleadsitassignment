@@ -4,19 +4,22 @@ import React from "react";
 import styled from "styled-components";
 import { useGetSingleProductsQuery } from "@/src/redux/api/products/productApi";
 import Link from "next/link";
+import Loading from "@/src/app/loading";
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   padding: 20px;
 `;
 
 const ProductContainer = styled.div`
-  max-width: 800px;
+  max-width: 1257px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  display: flex;
+  flex-direction: row;
 `;
 
 const ProductImage = styled.img`
@@ -27,7 +30,7 @@ const ProductImage = styled.img`
 `;
 
 const ProductInfo = styled.div`
-  margin-top: 20px;
+  margin: 20px;
 `;
 
 const ProductTitle = styled.h2`
@@ -45,6 +48,7 @@ const ProductDescription = styled.p`
 
 const BackButton = styled(Link)`
   margin-top: 20px;
+  margin-bottom: 20px;
   padding: 10px;
   background-color: #ff8c00;
   color: #fff;
@@ -59,11 +63,12 @@ const ViewSingleProduct = ({ params }: any) => {
   const singleProductData = data;
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
     <Wrapper>
+      <BackButton href={"/products"}>Back to Products</BackButton>
       <ProductContainer>
         <ProductImage
           src={singleProductData.images[0].url}
@@ -79,7 +84,6 @@ const ViewSingleProduct = ({ params }: any) => {
           </ProductDescription>
         </ProductInfo>
       </ProductContainer>
-      <BackButton href={"/products"}>Back to Products</BackButton>
     </Wrapper>
   );
 };
