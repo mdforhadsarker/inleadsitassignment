@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 const HomePage = () => {
  
-  return redirect('/all')
+  return redirect('/products')
 
 };
 

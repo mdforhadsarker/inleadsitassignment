@@ -98,7 +98,7 @@ const Card = ({ imageSrc, title, price, description, productId }) => {
           <div>
             <Description>{description}</Description>
             <DetailsButton>
-              <Link href={`/all/view/${productId}`}>Details</Link>
+              <Link href={`/products/view/${productId}`}>Details</Link>
             </DetailsButton>
           </div>
         </div>

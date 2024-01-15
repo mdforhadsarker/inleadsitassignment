@@ -130,25 +130,25 @@ const Sidebar = ({
 
       <SidebarSection>
         <SidebarHeading>Category</SidebarHeading>
-        <Link href="/all">
+        <Link href="/">
           <div>All</div>
         </Link>
-        <Link href="/all/office">
+        <Link href="/products/office">
           <div>Office</div>
         </Link>
-        <Link href="/all/living-room">
+        <Link href="/products/living-room">
           <div>Living Room</div>
         </Link>
-        <Link href="/all/kitchen">
+        <Link href="/products/kitchen">
           <div>Kitchen</div>
         </Link>
-        <Link href="/all/bedroom">
+        <Link href="/products/bedroom">
           <div>Bedroom</div>
         </Link>
-        <Link href="/all/dining">
+        <Link href="/products/dining">
           <div>Dining</div>
         </Link>
-        <Link href="/all/kids">
+        <Link href="/products/kids">
           <div>Kids</div>
         </Link>
       </SidebarSection>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import SideBar from "../components/Sidebar";
-import ProductList from "./all/page";
+import ProductList from "./products/page";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const [searchTerm, setSearchTerm] = useState("");

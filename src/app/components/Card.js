@@ -36,7 +36,7 @@ const Price = styled.p`
 
 const Card = ({ imageSrc, title, price, productId }) => {
   return (
-    <Link href={`/all/view/${productId}`}>
+    <Link href={`/products/view/${productId}`}>
       <CardContainer>
         <Image src={imageSrc} alt={title} />
         <ContentContainer>
