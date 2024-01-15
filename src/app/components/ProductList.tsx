@@ -53,7 +53,10 @@ const SortBySelect = styled.select`
   cursor: pointer;
 `;
 
-const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
+const ProductList: React.FC<{
+  searchTerm: string;
+  selectedCategory: string;
+}> = ({ searchTerm, selectedCategory }) => {
   const [viewMode, setViewMode] = useState<"grid" | "col">("grid");
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("");
@@ -85,8 +88,8 @@ const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
 
   // get products data
   const { data: productsList, isLoading } = useGetAllProductsQuery({
-    searchTerm: searchTerm,
-    filter: searchTerm,
+    searchTerm: debouncedTerm,
+    filter: selectedCategory,
     sortBy:
       selectedSortType === "lowest"
         ? "price"
@@ -109,10 +112,13 @@ const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
   useEffect(() => {
     setLoading(true);
 
-    // Fetch all products and filter based on the search term client-side
+    // Fetch all products and filter based on the search term and category client-side
     const filteredProducts =
-      productsList?.filter((product: any) =>
-        product.name.toLowerCase().includes(debouncedTerm?.toLowerCase())
+      productsList?.filter(
+        (product: any) =>
+          product.name.toLowerCase().includes(debouncedTerm?.toLowerCase()) &&
+          (selectedCategory === "All" ||
+            product.category.toLowerCase() === selectedCategory.toLowerCase())
       ) || [];
 
     // Apply client-side sorting
@@ -131,7 +137,6 @@ const ProductList: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
 
     setLoading(false); // Set loading state to false after updating the products
   }, [debouncedTerm, productsList, selectedSortType]);
-
 
   return (
     <>

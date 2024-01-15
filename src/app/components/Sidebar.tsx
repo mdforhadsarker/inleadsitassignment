@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Link from "next/link";
-import { useDispatch, useSelector } from 'react-redux';
-import { setSearchTerm, selectSearchTerm } from '../../redux/slice/searchSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchTerm, selectSearchTerm } from "../../redux/slice/searchSlice";
 
 const SidebarContainer = styled.div`
   width: 250px;
@@ -83,12 +83,24 @@ const ColorButton = styled.button`
   }
 `;
 
+const SidebarButton = styled.button`
+  font-size: 14px;
+  margin-bottom: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-bottom: ${(props) => (props.selected ? "2px solid #3498db" : "none")};
+  padding-bottom: ${(props) => (props.selected ? "8px" : "0")};
+`;
+
 const Sidebar = ({
   onSearchTermChange,
+  setSelectedCategory, // Add this line to include the prop
 }: {
   onSearchTermChange: (term: string) => void;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>; // Include the type
 }) => {
-  // const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategoryLocal] = useState("All");
   const [selectedCompanyType, setSelectedCompanyType] = useState("All");
   const [selectedColors, setSelectedColors] = useState(["All"]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 4000 });
@@ -97,14 +109,26 @@ const Sidebar = ({
   const searchTerm = useSelector(selectSearchTerm);
 
   const handleClearFilters = () => {
-    dispatch(setSearchTerm('')); // Clear the search term
+    dispatch(setSearchTerm("")); // Clear the search term
     setSearchTerm("");
+    setSelectedCategory("All");
     setSelectedCompanyType("All");
     setSelectedColors(["All"]);
     setPriceRange({ min: 0, max: 4000 });
     setFreeShipping(false);
-    onSearchTermChange(''); // Pass an empty string to parent
+    onSearchTermChange(""); // Pass an empty string to parent
   };
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategoryLocal(category);
+    setSelectedCategory(category);
+    dispatch(setSearchTerm("")); // Clear search term when a category is selected
+    onSearchTermChange(""); // Pass an empty string to parent
+  };
+
+  useEffect(() => {
+    console.log("Selected Category Updated:", selectedCategory);
+  }, [selectedCategory]);
 
   const handleColorClick = (color: any) => {
     if (color === "All") {
@@ -136,27 +160,71 @@ const Sidebar = ({
 
       <SidebarSection>
         <SidebarHeading>Category</SidebarHeading>
-        <Link href="/">
-          <div>All</div>
-        </Link>
-        <Link href="/products/office">
-          <div>Office</div>
-        </Link>
-        <Link href="/products/living-room">
-          <div>Living Room</div>
-        </Link>
-        <Link href="/products/kitchen">
-          <div>Kitchen</div>
-        </Link>
-        <Link href="/products/bedroom">
-          <div>Bedroom</div>
-        </Link>
-        <Link href="/products/dining">
-          <div>Dining</div>
-        </Link>
-        <Link href="/products/kids">
-          <div>Kids</div>
-        </Link>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flext-start",
+            alignItems: "left",
+          }}
+        >
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "All"}
+              onClick={() => handleCategoryClick("All")}
+            >
+              All
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "Office"}
+              onClick={() => handleCategoryClick("Office")}
+            >
+              Office
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "bedroom"}
+              onClick={() => handleCategoryClick("bedroom")}
+            >
+              Bedroom
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "Living Room"}
+              onClick={() => handleCategoryClick("Living Room")}
+            >
+              Living Room
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "Dining"}
+              onClick={() => handleCategoryClick("Dining")}
+            >
+              Dining
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "kitchen"}
+              onClick={() => handleCategoryClick("kitchen")}
+            >
+              Kitchen
+            </SidebarButton>
+          </div>
+          <div>
+            <SidebarButton
+              selected={selectedCategory === "kids"}
+              onClick={() => handleCategoryClick("kids")}
+            >
+              Kids
+            </SidebarButton>
+          </div>
+        </div>
       </SidebarSection>
 
       <SidebarSection>

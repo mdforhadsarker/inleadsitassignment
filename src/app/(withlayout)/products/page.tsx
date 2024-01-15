@@ -6,10 +6,17 @@ import ProductList from "../../components/ProductList";
 
 const ProductLists = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   return (
     <>
-      <Sidebar onSearchTermChange={setSearchTerm} />
-      <ProductList searchTerm={searchTerm} />
+      <Sidebar
+        onSearchTermChange={setSearchTerm}
+        setSelectedCategory={setSelectedCategory}
+      />
+      <ProductList
+        searchTerm={searchTerm}
+        selectedCategory={selectedCategory}
+      />
     </>
   );
 };
